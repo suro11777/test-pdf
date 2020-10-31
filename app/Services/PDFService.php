@@ -3,8 +3,8 @@
 
 namespace App\Services;
 
+use App\Models\Document;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Storage;
 use mikehaertl\pdftk\Pdf;
 
@@ -25,14 +25,11 @@ class PDFService extends BaseService
         }
         $fileName = time() . $data['pdf']->getClientOriginalName();
         $file = Storage::put($fileName, file_get_contents($data['pdf']));
-//        return $file;
-//        Storage::put(time() . $data['pdf']->getClientOriginalName(), $data['pdf']);
+
         if (!$file) {
             return false;
         }
-
         $fields = $this->getFilds($fileName);
-
         return $fields;
     }
 
@@ -44,7 +41,7 @@ class PDFService extends BaseService
     {
         $path = Storage::path($fileName);
         $pdf = new Pdf($path);
-        $fields = $pdf->getDataFields()->__toArray();dd($fields);
+        $fields = $pdf->getDataFields()->__toArray();
         $fields = collect($fields)->map(function ($item) {
             if (count($item) > 4) {
                 return $item;
@@ -53,44 +50,57 @@ class PDFService extends BaseService
         session(['fileName' => $fileName]);
 
         return $fields;
-
-
     }
 
     /**
+     *
      * @param $data
-     * @return bool
+     * @return array|bool
      */
     public function store($data)
     {
-//        dd($data);
         $fileName = session('fileName');
         $path = Storage::path($fileName);
         $pdf = new Pdf($path);
 
-        foreach ($data as $key => $value){
-            $newData[str_replace('_', ' ', $key)] = $value;
+        $newData = $this->getNewData($data);
+        if (empty($newData)){
+            return false;
         }
-
         $newPDF = $pdf->fillForm($newData)
             ->needAppearances()
             ->saveAs($path);
+        if (!File::exists($path)){
+            return false;
+        }
+        $document = $this->saveDocument($fileName);
+        if (!$document){
+            return false;
+        }
 
         return [$newPDF, $fileName];
     }
 
-//    /**
-//     * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
-//     */
-//    public function download()
-//    {
-//        $fileName = session('fileName');
-//        $file= Storage::path($fileName);
-////        $file= storage_path("app/public/{$fileName}");
-//        $headers = array(
-//            'Content-Type: application/pdf',
-//        );
-////return Response::download($file, $fileName, $headers);
-//        return \response()->download($file/*, $fileName, $headers*/);
-//    }
+    /**
+     * @param $data
+     * @return mixed
+     */
+    public function getNewData($data)
+    {
+        foreach ($data as $key => $value){
+            $newData[str_replace('_', ' ', $key)] = $value;
+        }
+        return $newData;
+    }
+
+    /**
+     * @param $data
+     * @return mixed
+     */
+    public function saveDocument($fileName)
+    {
+        $data = ['url' => Storage::url($fileName), 'pdf_name' => $fileName];
+        return Document::create($data);
+    }
+
 }
