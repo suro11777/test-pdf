@@ -16,7 +16,7 @@
             @foreach($fields as $field)
                 <div class="form-group">
                     <label for="{{$field['FieldName']}}">{{$field['FieldName']}}</label>
-                    @if(str_contains($field['FieldName'], 'date'))
+                    @if(str_contains(strtolower($field['FieldName']), 'date'))
                         @php $field['FieldType'] = 'date' @endphp
                     @endif
                     <input class="form-control" type="{{$field['FieldType']}}" value="{{old(str_replace(' ', '_',$field['FieldName']))}}" name="{{$field['FieldName']}}"
