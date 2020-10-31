@@ -29,16 +29,18 @@ class PDFService extends BaseService
         if (!$file) {
             return false;
         }
-        $fields = $this->getFilds($fileName);
-        return $fields;
+        session(['fileName' => $fileName]);
+
+        return $file;
     }
 
     /**
      * @param $fileName
      * @return array|\Illuminate\Support\Collection
      */
-    public function getFilds($fileName)
+    public function getFilds()
     {
+        $fileName = session('fileName');
         $path = Storage::path($fileName);
         $pdf = new Pdf($path);
         $fields = $pdf->getDataFields()->__toArray();
@@ -47,7 +49,6 @@ class PDFService extends BaseService
                 return $item;
             }
         })->filter();
-        session(['fileName' => $fileName]);
 
         return $fields;
     }

@@ -4,6 +4,7 @@
 namespace App\Http\Controllers;
 
 
+use App\Http\Requests\PDFRequest;
 use App\Services\PDFService;
 use Illuminate\Http\Request;
 
@@ -36,24 +37,25 @@ class PDFController extends BaseController
      */
     public function uploadPDF(Request $request)
     {
-        $fields = $this->baseService->savePDF($request->all());
-        if (!$fields) {
+        $file = $this->baseService->savePDF($request->all());
+        if (!$file) {
             return redirect()->back();
         }
-        return view('pdf.form', compact('fields'));
+        return redirect()->route('pdf-form');
+//        return view('pdf.form', compact('fields'));
     }
 
-//    public function showFilds()
-//    {
-//        $fields = $this->baseService->getFilds();
-//        return view('pdf.form', compact('fields'));
-//    }
+    public function showFilds()
+    {
+        $fields = $this->baseService->getFilds();
+        return view('pdf.form', compact('fields'));
+    }
 
     /**
      * @param Request $request
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\View\View
      */
-    public function store(Request $request)
+    public function store(PDFRequest $request)
     {
         [$newPDF, $fileName] = $this->baseService->store($request->except('_token', 'submit'));
         if (!$newPDF) {
@@ -62,5 +64,5 @@ class PDFController extends BaseController
 
         return view('pdf.download-pdf', compact('fileName'));
     }
-    
+
 }
