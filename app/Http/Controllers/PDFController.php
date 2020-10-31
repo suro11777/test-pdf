@@ -41,7 +41,6 @@ class PDFController extends BaseController
             return redirect()->back();
         }
         return view('pdf.form', compact('fields'));
-
     }
 
 //    public function showFilds()
