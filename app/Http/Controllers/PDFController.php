@@ -42,7 +42,6 @@ class PDFController extends BaseController
             return redirect()->back();
         }
         return redirect()->route('pdf-form');
-//        return view('pdf.form', compact('fields'));
     }
 
     /**
