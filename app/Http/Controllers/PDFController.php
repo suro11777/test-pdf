@@ -45,6 +45,9 @@ class PDFController extends BaseController
 //        return view('pdf.form', compact('fields'));
     }
 
+    /**
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function showFilds()
     {
         $fields = $this->baseService->getFilds();

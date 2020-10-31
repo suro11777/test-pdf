@@ -16,6 +16,7 @@ class PDFService extends BaseService
 {
     /**
      * @param $data
+     * save pdf file in local, and add file name in session
      * @return array|bool|\Illuminate\Support\Collection
      */
     public function savePDF($data)
@@ -36,6 +37,7 @@ class PDFService extends BaseService
 
     /**
      * @param $fileName
+     * get all fields from pdf file
      * @return array|\Illuminate\Support\Collection
      */
     public function getFilds()
@@ -56,6 +58,7 @@ class PDFService extends BaseService
     /**
      *
      * @param $data
+     * save new data in pdf file, and save info pdf document to database
      * @return array|bool
      */
     public function store($data)
@@ -84,6 +87,7 @@ class PDFService extends BaseService
 
     /**
      * @param $data
+     * change data
      * @return mixed
      */
     public function getNewData($data)
@@ -96,6 +100,7 @@ class PDFService extends BaseService
 
     /**
      * @param $data
+     * save info pdf file to database
      * @return mixed
      */
     public function saveDocument($fileName)
