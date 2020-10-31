@@ -44,7 +44,7 @@ class PDFService extends BaseService
     {
         $path = Storage::path($fileName);
         $pdf = new Pdf($path);
-        $fields = $pdf->getDataFields()->__toArray();/*dd($fields);*/
+        $fields = $pdf->getDataFields()->__toArray();dd($fields);
         $fields = collect($fields)->map(function ($item) {
             if (count($item) > 4) {
                 return $item;
