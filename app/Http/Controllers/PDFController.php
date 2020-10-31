@@ -62,17 +62,5 @@ class PDFController extends BaseController
 
         return view('pdf.download-pdf', compact('fileName'));
     }
-
-    /**\
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function downloadPDF()
-    {
-        $download = $this->baseService->download();
-        if (!$download) {
-            return redirect()->back();
-        }
-
-        return redirect()->route('upload-pdf-form');
-    }
+    
 }
